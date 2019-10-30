@@ -54,7 +54,7 @@ class LSTMPreprocessableString(str: String) {
 
   }
 
-  private def alignSequence(seq: Vector[Int], to: Int): Vector[Int] = seq match {
+  private def alignSequence(seq: Vector[Int], to: Int): Vector[Int] = {
 
   }
 
