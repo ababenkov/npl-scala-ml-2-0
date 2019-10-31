@@ -39,29 +39,32 @@ trait LSTMModel {
 class LSTMPreprocessableString(str: String) {
 
   def encodeAlign(index: Map[String, Int], to: Int, numWords: Int): Vector[Int] = {
-
+    alignSequence(encode(index, numWords), to)
   }
 
   def encode(index: Map[String, Int], numWords: Int): Vector[Int] = {
-
+    val indexes: Array[Option[Int]] = str.split(" ").map(_.toLowerCase).map(index.get)
+    indexes.map(_.filter(_ < numWords + 4)).map(_.getOrElse(index("<UNK>"))).toVector
   }
 
   private def prepad(seq: Vector[Int], to: Int, p: Int): Vector[Int] = {
-
+    (0 until to - seq.size).map(_ => p).toVector ++ seq
   }
 
   private def truncate(seq: Vector[Int], to: Int): Vector[Int] = {
-
+    seq.takeRight(to)
   }
 
-  private def alignSequence(seq: Vector[Int], to: Int): Vector[Int] = {
-
+  private def alignSequence(seq: Vector[Int], to: Int): Vector[Int] = seq match {
+    case x if x.size > to => truncate(seq, to)
+    case x if x.size < to => prepad(seq, to, 0)
+    case x => x
   }
 
 }
 
 class LSTMPreprocessedSeq[T](seq: IndexedSeq[T]) {
   def decode(inverseIndex: Map[T, String]): String = {
-
+    seq.map(inverseIndex).mkString(" ")
   }
 }

@@ -19,9 +19,11 @@ object LSTMStreamingApp extends LSTMModel with StreamHelpers {
   }
 
   def testEncoding() = {
-    val testCase = "I love this awesome film"
+    val testCase = "i love this awesome film"
     val testCaseEncoded = testCase.encode(index, 20000)
     assert(testCase == testCaseEncoded.decode(inverseIndex))
+//    println(testCase)
+//    println(testCaseEncoded.decode(inverseIndex))
   }
 
   def main(args: Array[String]): Unit = {
@@ -29,7 +31,7 @@ object LSTMStreamingApp extends LSTMModel with StreamHelpers {
     testEncoding()
 
     val predictionStream = sentenceStream
-      .map(somePreprocessing(_))
+      .map(_.encodeAlign(index, 100, 20000).map(_.toFloat))
       .map(x => predictSequence(x).toString)
 
     writeResult(predictionStream)
